@@ -78,11 +78,11 @@
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
 
-  --background: 0 0% 100%;
-  --foreground: 227 69% 18%;
-  --border: 214 32% 91%;
+  --background: 0 0% 96.5%;
+  --foreground: 0 0% 13%;
+  --border: 0 0% 90%;
   --card: 0 0% 100%;
-  --card-foreground: 227 69% 18%;
+  --card-foreground: 0 0% 13%;
   --sidebar: 0 0% 100%;
   --sidebar-foreground: 227 69% 18%;
   --sidebar-border: 214 32% 91%;

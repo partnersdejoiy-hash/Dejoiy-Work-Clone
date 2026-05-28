@@ -1,115 +1,94 @@
-import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { useGetDashboardStats, useListTasks, useListAnnouncements } from "@workspace/api-client-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Users, CheckSquare, Calendar, Receipt, Laptop, Bell } from "lucide-react";
+import { useListTasks } from "@workspace/api-client-react";
 import { Link } from "wouter";
-import { motion } from "framer-motion";
+import { Inbox, MoreHorizontal } from "lucide-react";
+import { WorkdayBanner } from "@/components/layout/workday-banner";
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { data: stats, isLoading: statsLoading } = useGetDashboardStats();
-  const { data: tasks, isLoading: tasksLoading } = useListTasks();
-  const { data: announcements, isLoading: announcementsLoading } = useListAnnouncements();
+  const { data: tasks } = useListTasks();
 
-  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const myTasks = (tasks ?? []).filter((t) => t.assigneeId === user?.id).slice(0, 5);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold text-[#0E1B4D]" data-testid="dashboard-welcome">Good morning, {user?.name}</h1>
-        <p className="text-gray-500">{today}</p>
-      </div>
+    <div className="w-full">
+      <WorkdayBanner />
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <StatCard title="Total Employees" value={stats?.totalEmployees} icon={<Users className="w-5 h-5 text-blue-500" />} isLoading={statsLoading} />
-        <StatCard title="Active Tasks" value={stats?.activeTasks} icon={<CheckSquare className="w-5 h-5 text-orange-500" />} isLoading={statsLoading} />
-        <StatCard title="Pending Leave" value={stats?.pendingLeaves} icon={<Calendar className="w-5 h-5 text-yellow-500" />} isLoading={statsLoading} />
-        <StatCard title="Pending Expenses" value={stats?.pendingExpenses} icon={<Receipt className="w-5 h-5 text-purple-500" />} isLoading={statsLoading} />
-        <StatCard title="Open Tickets" value={stats?.openTickets} icon={<Laptop className="w-5 h-5 text-red-500" />} isLoading={statsLoading} />
-        <StatCard title="Unread Notifications" value={stats?.unreadNotifications} icon={<Bell className="w-5 h-5 text-teal-500" />} isLoading={statsLoading} />
-      </div>
+      <div className="px-5 md:px-8 py-6 max-w-3xl mx-auto">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-1" data-testid="dashboard-welcome">
+          Let's Focus on You
+        </h1>
+        <p className="text-gray-500 mb-5">It's {today}</p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle>My Tasks</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {tasksLoading ? (
-              <div className="space-y-4"><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /></div>
-            ) : tasks?.slice(0, 5).length === 0 ? (
-              <p className="text-gray-500 text-sm py-4 text-center">No active tasks.</p>
+        <div className="flex flex-wrap gap-3 mb-6">
+          <PillLink href="/org-chart" label="My Org Chart" />
+          <PillLink href="/payroll" label="My Payslips" />
+          <PillLink href="/recruitment" label="Find Jobs" />
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-6 pt-5 pb-3">
+            <h2 className="text-xl font-bold text-gray-900">Awaiting Your Action</h2>
+            <button className="p-1.5 rounded-full hover:bg-gray-100">
+              <MoreHorizontal className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
+          <div className="divide-y divide-gray-100">
+            {myTasks.length === 0 ? (
+              <p className="px-6 py-10 text-center text-gray-500">Nothing awaiting your action right now.</p>
             ) : (
-              <div className="space-y-3">
-                {tasks?.slice(0, 5).map(task => (
-                  <div key={task.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-sm text-[#0E1B4D]">{task.title}</p>
-                      <div className="flex gap-2 mt-1">
-                        <Badge variant="outline" className="text-xs">{task.status}</Badge>
-                        <Badge variant="outline" className="text-xs">{task.priority}</Badge>
+              myTasks.map((task) => {
+                const monthsAgo = monthsSince(task.createdAt);
+                const overdue = task.dueDate && new Date(task.dueDate) < new Date();
+                return (
+                  <Link key={task.id} href="/tasks" className="block px-6 py-4 hover:bg-gray-50">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                        <Inbox className="w-5 h-5 text-gray-600" strokeWidth={1.8} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-gray-900 leading-snug">{task.title}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          My Tasks - {monthsAgo} month(s) ago
+                        </p>
+                        {overdue && (
+                          <span className="inline-block mt-2 text-[11px] font-bold tracking-wide text-[#E53935] bg-red-50 px-2 py-0.5 rounded">
+                            OVERDUE {new Date(task.dueDate!).toLocaleDateString("en-GB").replace(/\//g, "/")}
+                          </span>
+                        )}
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  </Link>
+                );
+              })
             )}
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle>Announcements</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {announcementsLoading ? (
-              <div className="space-y-4"><Skeleton className="h-16 w-full" /><Skeleton className="h-16 w-full" /></div>
-            ) : announcements?.slice(0, 3).length === 0 ? (
-              <p className="text-gray-500 text-sm py-4 text-center">No announcements.</p>
-            ) : (
-              <div className="space-y-4">
-                {announcements?.slice(0, 3).map(ann => (
-                  <div key={ann.id} className="border-b pb-3 last:border-0 last:pb-0">
-                    <div className="flex justify-between items-start mb-1">
-                      <h3 className="font-medium text-[#0E1B4D]">{ann.title}</h3>
-                      <Badge variant="secondary" className="text-xs capitalize">{ann.type}</Badge>
-                    </div>
-                    <p className="text-sm text-gray-600 line-clamp-2">{ann.content}</p>
-                    <p className="text-xs text-gray-400 mt-2">{new Date(ann.createdAt).toLocaleDateString()}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
-
-      <div className="flex flex-wrap gap-4">
-        <Link href="/tasks"><Button className="bg-[#F26522] hover:bg-[#d5581e] text-white">Create Task</Button></Link>
-        <Link href="/time-off"><Button variant="outline">Request Time Off</Button></Link>
-        <Link href="/expenses"><Button variant="outline">Submit Expense</Button></Link>
-        <Link href="/it-help"><Button variant="outline">Open IT Ticket</Button></Link>
-      </div>
-    </motion.div>
+    </div>
   );
 }
 
-function StatCard({ title, value, icon, isLoading }: { title: string, value?: number, icon: React.ReactNode, isLoading: boolean }) {
+function PillLink({ href, label }: { href: string; label: string }) {
   return (
-    <Card className="shadow-sm border-none shadow-[#0E1B4D]/5">
-      <CardContent className="p-4 flex flex-col gap-2">
-        <div className="flex justify-between items-start">
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <div className="p-2 bg-gray-50 rounded-lg">{icon}</div>
-        </div>
-        <div>
-          {isLoading ? <Skeleton className="h-8 w-16 mt-1" /> : <p className="text-2xl font-bold text-[#0E1B4D]">{value ?? 0}</p>}
-        </div>
-      </CardContent>
-    </Card>
+    <Link
+      href={href}
+      className="px-5 py-2 rounded-full border border-gray-300 text-gray-800 text-sm font-medium hover:bg-gray-50 bg-white"
+    >
+      {label}
+    </Link>
   );
+}
+
+function monthsSince(date: string | Date): number {
+  const d = new Date(date);
+  const now = new Date();
+  return Math.max(1, (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth()));
 }
