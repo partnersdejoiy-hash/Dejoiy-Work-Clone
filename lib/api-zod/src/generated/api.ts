@@ -155,7 +155,8 @@ export const UpdateUserBody = zod.object({
   "jobTitle": zod.string().optional(),
   "phone": zod.string().optional(),
   "location": zod.string().optional(),
-  "status": zod.string().optional()
+  "status": zod.string().optional(),
+  "avatarUrl": zod.string().optional()
 })
 
 export const UpdateUserResponse = zod.object({

@@ -48,6 +48,7 @@ export interface UserUpdate {
   phone?: string;
   location?: string;
   status?: string;
+  avatarUrl?: string;
 }
 
 export interface LoginInput {

@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useUpdateUser } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Users, MapPin, MoreHorizontal, ChevronRight, X } from "lucide-react";
+import { Mail, Users, MapPin, ChevronRight, X, Camera, Loader2 } from "lucide-react";
 
 export default function Profile() {
   const { user } = useAuth();
@@ -13,6 +13,8 @@ export default function Profile() {
 
   const [editOpen, setEditOpen] = useState(false);
   const [showAllSections, setShowAllSections] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: user?.name || "",
     phone: user?.phone || "",
@@ -31,6 +33,32 @@ export default function Profile() {
       setEditOpen(false);
     } catch {
       toast({ title: "Error updating profile", variant: "destructive" });
+    }
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Please choose an image file", variant: "destructive" });
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ title: "Image must be smaller than 2 MB", variant: "destructive" });
+      return;
+    }
+    setUploading(true);
+    try {
+      const dataUrl = await resizeImage(file, 400);
+      await updateUser.mutateAsync({ id: user.id, data: { avatarUrl: dataUrl } });
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
+      toast({ title: "Photo updated" });
+    } catch {
+      toast({ title: "Error uploading photo", variant: "destructive" });
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -62,8 +90,32 @@ export default function Profile() {
           <path d="M 0 80 Q 720 0 1440 80 L 1440 80 L 0 80 Z" fill="#F2F2F2" />
         </svg>
         <div className="absolute left-1/2 -translate-x-1/2 -bottom-12 z-10">
-          <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white text-4xl font-bold ring-4 ring-white">
-            {user.name.charAt(0)}
+          <div className="relative">
+            <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white text-4xl font-bold ring-4 ring-white overflow-hidden">
+              {user.avatarUrl ? (
+                <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+              ) : (
+                user.name.charAt(0)
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="absolute bottom-1 right-1 w-9 h-9 rounded-full bg-[#0875E1] hover:bg-[#0866c4] disabled:opacity-70 ring-2 ring-white flex items-center justify-center text-white shadow-md"
+              aria-label="Change profile photo"
+              data-testid="upload-avatar-button"
+            >
+              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarChange}
+              data-testid="upload-avatar-input"
+            />
           </div>
         </div>
       </div>
@@ -297,4 +349,29 @@ function Field({ label, value, link, icon }: { label: string; value: string; lin
 
 function monthsBetween(a: Date, b: Date): number {
   return (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
+}
+
+function resizeImage(file: File, maxSize: number): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("read failed"));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("image decode failed"));
+      img.onload = () => {
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return reject(new Error("no canvas context"));
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL("image/jpeg", 0.85));
+      };
+      img.src = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
 }

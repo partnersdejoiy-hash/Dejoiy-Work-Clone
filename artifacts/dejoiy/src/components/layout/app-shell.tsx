@@ -81,8 +81,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             className="relative p-1 rounded-full hover:bg-gray-100"
             data-testid="open-profile"
           >
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold ring-2 ring-white">
-              {user?.name?.charAt(0) ?? "U"}
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold ring-2 ring-white overflow-hidden">
+              {user?.avatarUrl ? (
+                <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+              ) : (
+                user?.name?.charAt(0) ?? "U"
+              )}
             </div>
             {unreadCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 min-w-[20px] h-[20px] px-1 bg-[#E53935] rounded-full text-[11px] text-white flex items-center justify-center font-bold border-2 border-white">
@@ -311,8 +315,12 @@ function ProfileDrawer({
       {view === "main" && (
         <div className="flex-1 flex flex-col">
           <div className="flex flex-col items-center pt-2 pb-6 px-6">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-3xl font-bold mb-3">
-              {user?.name?.charAt(0)}
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-3xl font-bold mb-3 overflow-hidden">
+              {user?.avatarUrl ? (
+                <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+              ) : (
+                user?.name?.charAt(0)
+              )}
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-3">{user?.name}</h2>
             <button
