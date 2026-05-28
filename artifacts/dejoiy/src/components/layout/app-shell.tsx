@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import dejoiyLogo from "@assets/IMG-20260506-WA0001_1779996360464.jpg";
 import {
-  Menu, X, Search, Bell, Home, User, Inbox, Star, FileText, HelpCircle, LogOut,
+  Menu, X, Search, Bell, Home, User, Inbox, Star, FileText, HelpCircle,
   Briefcase, BookOpen, IdCard, Mail, BarChart3, Wallet, Users,
-  ChevronRight, ExternalLink, Check
+  ChevronRight, ExternalLink, Check, Sparkles
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -14,6 +14,7 @@ import {
   getListNotificationsQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const APPS = [
   { path: "/dashboard", label: "Onboarding", Icon: Briefcase },
@@ -35,7 +36,15 @@ const APPS = [
   { path: "/announcements", label: "Announcements", Icon: Mail },
 ];
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  onOpenCommand,
+  onOpenAi,
+}: {
+  children: React.ReactNode;
+  onOpenCommand?: () => void;
+  onOpenAi?: () => void;
+}) {
   const [, navigate] = useLocation();
   const { user, logout } = useAuth();
   const queryClient = useQueryClient();
@@ -53,9 +62,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F2F2] flex flex-col">
+    <div className="min-h-screen bg-[#F2F2F2] dark:bg-zinc-950 text-gray-900 dark:text-white flex flex-col transition-colors">
       {/* Top Header — Workday style */}
-      <header className="bg-white h-14 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30 border-b border-gray-100">
+      <header className="bg-white/80 dark:bg-zinc-950/70 backdrop-blur-xl h-14 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30 border-b border-gray-100 dark:border-white/5 transition-colors">
         <div className="flex items-center gap-3 md:gap-4">
           <button
             onClick={() => setMenuOpen(true)}
@@ -71,19 +80,41 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="flex items-center gap-1">
+          {onOpenCommand && (
+            <button
+              onClick={onOpenCommand}
+              className="hidden md:flex items-center gap-2 h-9 px-3 mr-1 rounded-full bg-gray-100/80 dark:bg-white/5 hover:bg-gray-200/80 dark:hover:bg-white/10 text-sm text-gray-500 dark:text-gray-400 transition-colors"
+              data-testid="open-command-palette"
+            >
+              <Search className="w-4 h-4" />
+              <span>Search or ask AI…</span>
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-white dark:bg-zinc-900 text-gray-600 dark:text-gray-400 rounded border border-gray-200 dark:border-white/10">⌘K</kbd>
+            </button>
+          )}
+          {onOpenAi && (
+            <button
+              onClick={onOpenAi}
+              className="md:hidden p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10"
+              aria-label="Ask AI"
+              data-testid="open-ai-mobile"
+            >
+              <Sparkles className="w-5 h-5 text-violet-500" strokeWidth={2} />
+            </button>
+          )}
           <button
             onClick={() => setSearchOpen(true)}
-            className="p-2 rounded-full hover:bg-gray-100"
+            className="md:hidden p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10"
             data-testid="open-search"
           >
-            <Search className="w-5 h-5 text-gray-800" strokeWidth={2} />
+            <Search className="w-5 h-5 text-gray-800 dark:text-gray-200" strokeWidth={2} />
           </button>
+          <ThemeToggle />
           <button
             onClick={() => setProfileOpen(true)}
-            className="relative p-1 rounded-full hover:bg-gray-100"
+            className="relative p-1 rounded-full hover:bg-black/5 dark:hover:bg-white/10"
             data-testid="open-profile"
           >
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold ring-2 ring-white overflow-hidden">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center text-white text-sm font-bold ring-2 ring-white dark:ring-zinc-950 overflow-hidden">
               {user?.avatarUrl ? (
                 <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
               ) : (
@@ -91,7 +122,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               )}
             </div>
             {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[20px] h-[20px] px-1 bg-[#E53935] rounded-full text-[11px] text-white flex items-center justify-center font-bold border-2 border-white">
+              <span className="absolute -top-0.5 -right-0.5 min-w-[20px] h-[20px] px-1 bg-[#E53935] rounded-full text-[11px] text-white flex items-center justify-center font-bold border-2 border-white dark:border-zinc-950">
                 {unreadCount > 99 ? "99+" : unreadCount}
               </span>
             )}
