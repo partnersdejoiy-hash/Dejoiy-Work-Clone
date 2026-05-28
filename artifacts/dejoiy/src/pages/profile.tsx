@@ -85,7 +85,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-[#F2F2F2] pb-12">
       {/* Blue curved header */}
-      <div className="relative bg-[#0875E1] h-44 md:h-52">
+      <div className="relative bg-[#0875E1] h-40 sm:h-48 md:h-56 lg:h-64">
         <svg className="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 80" preserveAspectRatio="none">
           <path d="M 0 80 Q 720 0 1440 80 L 1440 80 L 0 80 Z" fill="#F2F2F2" />
         </svg>
@@ -120,7 +120,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 pt-16 text-center">
+      <div className="max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 text-center">
         <h1 className="text-3xl font-bold text-gray-900" data-testid="profile-name">{user.name}</h1>
         <p className="text-gray-600 mt-1">{user.jobTitle || "Teammate"}</p>
 

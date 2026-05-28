@@ -21,7 +21,7 @@ export default function Dashboard() {
     <div className="w-full">
       <WorkdayBanner />
 
-      <div className="px-5 md:px-8 py-6 max-w-3xl mx-auto">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-1" data-testid="dashboard-welcome">
           Let's Focus on You
         </h1>

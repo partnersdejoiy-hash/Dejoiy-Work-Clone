@@ -1,6 +1,6 @@
 export function WorkdayBanner() {
   return (
-    <div className="w-full h-32 md:h-40 overflow-hidden relative bg-white">
+    <div className="w-full h-28 sm:h-36 md:h-44 lg:h-52 xl:h-60 overflow-hidden relative bg-white">
       <svg viewBox="0 0 800 160" preserveAspectRatio="xMidYMid slice" className="w-full h-full">
         <rect x="0" y="0" width="200" height="160" fill="#FFE9F1" />
         <circle cx="60" cy="80" r="36" fill="#E91E63" />

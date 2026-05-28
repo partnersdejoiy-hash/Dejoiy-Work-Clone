@@ -158,7 +158,9 @@ function MenuDrawer({
   const [tab, setTab] = useState<"apps" | "shortcuts">("apps");
 
   return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col animate-in fade-in duration-150" data-testid="menu-drawer">
+    <div className="fixed inset-0 z-50 animate-in fade-in duration-150" data-testid="menu-drawer">
+      <div className="absolute inset-0 bg-black/40 md:bg-black/30" onClick={onClose} />
+      <div className="absolute inset-0 md:inset-y-0 md:left-0 md:right-auto md:w-[420px] md:shadow-2xl bg-white flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between px-5 h-14 border-b border-gray-100">
         <h2 className="text-2xl font-bold text-gray-900">Menu</h2>
@@ -233,13 +235,16 @@ function MenuDrawer({
           </button>
         </div>
       )}
+      </div>
     </div>
   );
 }
 
 function SearchDrawer({ onClose }: { onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 bg-white animate-in fade-in duration-150" data-testid="search-drawer">
+    <div className="fixed inset-0 z-50 animate-in fade-in duration-150" data-testid="search-drawer">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="absolute inset-0 md:inset-x-0 md:top-0 md:bottom-auto md:max-w-3xl md:mx-auto md:mt-20 md:rounded-2xl md:shadow-2xl bg-white overflow-hidden">
       <div className="p-4">
         <div className="flex items-center gap-2">
           <div className="flex-1 flex items-center gap-2 border border-[#0875E1] rounded-md px-3 h-12">
@@ -280,6 +285,7 @@ function SearchDrawer({ onClose }: { onClose: () => void }) {
           </div>
         </div>
       </div>
+      </div>
     </div>
   );
 }
@@ -297,7 +303,9 @@ function ProfileDrawer({
   const [view, setView] = useState<"main" | "notifications" | "account">("main");
 
   return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col animate-in fade-in duration-150" data-testid="profile-drawer">
+    <div className="fixed inset-0 z-50 animate-in fade-in duration-150" data-testid="profile-drawer">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="absolute inset-0 md:inset-y-0 md:right-0 md:left-auto md:w-[420px] md:shadow-2xl bg-white flex flex-col">
       <div className="flex items-center justify-end px-4 h-14">
         {view !== "main" ? (
           <button onClick={() => setView("main")} className="mr-auto p-2 -ml-2 rounded hover:bg-gray-100">
@@ -400,6 +408,7 @@ function ProfileDrawer({
           )}
         </div>
       )}
+      </div>
     </div>
   );
 }
