@@ -65,9 +65,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Menu className="w-6 h-6 text-gray-800" strokeWidth={2} />
           </button>
 
-          <Link href="/dashboard" className="hidden md:flex items-center gap-2" data-testid="header-logo">
+          <Link href="/dashboard" className="hidden md:flex items-center" data-testid="header-logo">
             <img src={dejoiyLogo} alt="Dejoiy" className="h-9 w-9 rounded-md object-cover" />
-            <span className="font-extrabold text-[#0E1B4D] text-xl tracking-tight">Dejoiy</span>
           </Link>
         </div>
 
