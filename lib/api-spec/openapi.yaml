@@ -1,6 +1,5 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
   description: API specification
@@ -10,6 +9,25 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: dashboard
+    description: Dashboard operations
+  - name: users
+    description: User/Employee operations
+  - name: tasks
+    description: Task operations
+  - name: notifications
+    description: Notification operations
+  - name: leave-requests
+    description: Leave request operations
+  - name: expenses
+    description: Expense operations
+  - name: it-tickets
+    description: IT ticket operations
+  - name: announcements
+    description: Announcement operations
+
 paths:
   /healthz:
     get:
@@ -24,6 +42,503 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResult"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                required: [success]
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard statistics
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      summary: List all users
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      operationId: createUser
+      tags: [users]
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}:
+    get:
+      operationId: getUser
+      tags: [users]
+      summary: Get user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    patch:
+      operationId: updateUser
+      tags: [users]
+      summary: Update user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /tasks:
+    get:
+      operationId: listTasks
+      tags: [tasks]
+      summary: List tasks
+      parameters:
+        - name: assigneeId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      operationId: createTask
+      tags: [tasks]
+      summary: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "201":
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/{id}:
+    get:
+      operationId: getTask
+      tags: [tasks]
+      summary: Get task by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+    patch:
+      operationId: updateTask
+      tags: [tasks]
+      summary: Update task by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskUpdate"
+      responses:
+        "200":
+          description: Task updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+    delete:
+      operationId: deleteTask
+      tags: [tasks]
+      summary: Delete task by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Task deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                required: [success]
+
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags: [notifications]
+      summary: List notifications
+      responses:
+        "200":
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+
+  /notifications/{id}/read:
+    patch:
+      operationId: markNotificationRead
+      tags: [notifications]
+      summary: Mark notification as read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Notification updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+
+  /notifications/read-all:
+    post:
+      operationId: markAllNotificationsRead
+      tags: [notifications]
+      summary: Mark all notifications as read
+      responses:
+        "200":
+          description: All notifications marked as read
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                required: [success]
+
+  /leave-requests:
+    get:
+      operationId: listLeaveRequests
+      tags: [leave-requests]
+      summary: List leave requests
+      responses:
+        "200":
+          description: List of leave requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaveRequest"
+    post:
+      operationId: createLeaveRequest
+      tags: [leave-requests]
+      summary: Create a new leave request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeaveRequestInput"
+      responses:
+        "201":
+          description: Leave request created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaveRequest"
+
+  /leave-requests/{id}:
+    patch:
+      operationId: updateLeaveRequest
+      tags: [leave-requests]
+      summary: Update leave request status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeaveRequestUpdate"
+      responses:
+        "200":
+          description: Leave request updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaveRequest"
+
+  /expenses:
+    get:
+      operationId: listExpenses
+      tags: [expenses]
+      summary: List expenses
+      responses:
+        "200":
+          description: List of expenses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Expense"
+    post:
+      operationId: createExpense
+      tags: [expenses]
+      summary: Create a new expense
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpenseInput"
+      responses:
+        "201":
+          description: Expense created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Expense"
+
+  /expenses/{id}:
+    patch:
+      operationId: updateExpense
+      tags: [expenses]
+      summary: Update expense status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExpenseUpdate"
+      responses:
+        "200":
+          description: Expense updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Expense"
+
+  /it-tickets:
+    get:
+      operationId: listItTickets
+      tags: [it-tickets]
+      summary: List IT tickets
+      responses:
+        "200":
+          description: List of IT tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ItTicket"
+    post:
+      operationId: createItTicket
+      tags: [it-tickets]
+      summary: Create a new IT ticket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItTicketInput"
+      responses:
+        "201":
+          description: IT ticket created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ItTicket"
+
+  /it-tickets/{id}:
+    patch:
+      operationId: updateItTicket
+      tags: [it-tickets]
+      summary: Update IT ticket
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ItTicketUpdate"
+      responses:
+        "200":
+          description: IT ticket updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ItTicket"
+
+  /announcements:
+    get:
+      operationId: listAnnouncements
+      tags: [announcements]
+      summary: List announcements
+      responses:
+        "200":
+          description: List of announcements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Announcement"
+    post:
+      operationId: createAnnouncement
+      tags: [announcements]
+      summary: Create a new announcement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnnouncementInput"
+      responses:
+        "201":
+          description: Announcement created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Announcement"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +549,233 @@ components:
       required:
         - status
 
+    User:
+      type: object
+      required: [id, name, email, role, status, createdAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string }
+        role: { type: string }
+        department: { type: ["string", "null"] }
+        jobTitle: { type: ["string", "null"] }
+        avatarUrl: { type: ["string", "null"] }
+        phone: { type: ["string", "null"] }
+        location: { type: ["string", "null"] }
+        hireDate: { type: ["string", "null"] }
+        status: { type: string }
+        createdAt: { type: string }
+
+    UserInput:
+      type: object
+      required: [name, email, password]
+      properties:
+        name: { type: string }
+        email: { type: string }
+        password: { type: string }
+        role: { type: string }
+        department: { type: string }
+        jobTitle: { type: string }
+
+    UserUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string }
+        role: { type: string }
+        department: { type: string }
+        jobTitle: { type: string }
+        phone: { type: string }
+        location: { type: string }
+        status: { type: string }
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string }
+        password: { type: string }
+
+    AuthResult:
+      type: object
+      required: [user, sessionId]
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        sessionId: { type: string }
+
+    DashboardStats:
+      type: object
+      required: [totalEmployees, activeTasks, pendingLeaves, pendingExpenses, openTickets, unreadNotifications]
+      properties:
+        totalEmployees: { type: integer }
+        activeTasks: { type: integer }
+        pendingLeaves: { type: integer }
+        pendingExpenses: { type: integer }
+        openTickets: { type: integer }
+        unreadNotifications: { type: integer }
+
+    Task:
+      type: object
+      required: [id, title, creatorId, status, priority, createdAt, updatedAt]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        description: { type: ["string", "null"] }
+        assigneeId: { type: ["integer", "null"] }
+        creatorId: { type: integer }
+        status: { type: string }
+        priority: { type: string }
+        dueDate: { type: ["string", "null"] }
+        createdAt: { type: string }
+        updatedAt: { type: string }
+
+    TaskInput:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        assigneeId: { type: integer }
+        status: { type: string }
+        priority: { type: string }
+        dueDate: { type: string }
+
+    TaskUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        description: { type: string }
+        assigneeId: { type: integer }
+        status: { type: string }
+        priority: { type: string }
+        dueDate: { type: string }
+
+    Notification:
+      type: object
+      required: [id, userId, title, message, type, read, createdAt]
+      properties:
+        id: { type: integer }
+        userId: { type: integer }
+        title: { type: string }
+        message: { type: string }
+        type: { type: string }
+        read: { type: boolean }
+        relatedId: { type: ["integer", "null"] }
+        relatedType: { type: ["string", "null"] }
+        createdAt: { type: string }
+
+    LeaveRequest:
+      type: object
+      required: [id, employeeId, type, startDate, endDate, days, status, createdAt]
+      properties:
+        id: { type: integer }
+        employeeId: { type: integer }
+        type: { type: string }
+        startDate: { type: string }
+        endDate: { type: string }
+        days: { type: integer }
+        reason: { type: ["string", "null"] }
+        status: { type: string }
+        approverId: { type: ["integer", "null"] }
+        createdAt: { type: string }
+
+    LeaveRequestInput:
+      type: object
+      required: [type, startDate, endDate, days]
+      properties:
+        type: { type: string }
+        startDate: { type: string }
+        endDate: { type: string }
+        days: { type: integer }
+        reason: { type: string }
+
+    LeaveRequestUpdate:
+      type: object
+      properties:
+        status: { type: string }
+        approverId: { type: integer }
+        reason: { type: string }
+
+    Expense:
+      type: object
+      required: [id, employeeId, title, amount, category, status, expenseDate, createdAt]
+      properties:
+        id: { type: integer }
+        employeeId: { type: integer }
+        title: { type: string }
+        amount: { type: number }
+        category: { type: string }
+        receiptUrl: { type: ["string", "null"] }
+        status: { type: string }
+        approverId: { type: ["integer", "null"] }
+        expenseDate: { type: string }
+        notes: { type: ["string", "null"] }
+        createdAt: { type: string }
+
+    ExpenseInput:
+      type: object
+      required: [title, amount, category, expenseDate]
+      properties:
+        title: { type: string }
+        amount: { type: number }
+        category: { type: string }
+        expenseDate: { type: string }
+        notes: { type: string }
+
+    ExpenseUpdate:
+      type: object
+      properties:
+        status: { type: string }
+        approverId: { type: integer }
+        notes: { type: string }
+
+    ItTicket:
+      type: object
+      required: [id, submitterId, title, description, category, priority, status, createdAt]
+      properties:
+        id: { type: integer }
+        submitterId: { type: integer }
+        assigneeId: { type: ["integer", "null"] }
+        title: { type: string }
+        description: { type: string }
+        category: { type: string }
+        priority: { type: string }
+        status: { type: string }
+        resolvedAt: { type: ["string", "null"] }
+        createdAt: { type: string }
+
+    ItTicketInput:
+      type: object
+      required: [title, description, category]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        category: { type: string }
+        priority: { type: string }
+
+    ItTicketUpdate:
+      type: object
+      properties:
+        status: { type: string }
+        assigneeId: { type: integer }
+        priority: { type: string }
+
+    Announcement:
+      type: object
+      required: [id, authorId, title, content, type, createdAt]
+      properties:
+        id: { type: integer }
+        authorId: { type: integer }
+        title: { type: string }
+        content: { type: string }
+        type: { type: string }
+        createdAt: { type: string }
+
+    AnnouncementInput:
+      type: object
+      required: [title, content]
+      properties:
+        title: { type: string }
+        content: { type: string }
+        type: { type: string }

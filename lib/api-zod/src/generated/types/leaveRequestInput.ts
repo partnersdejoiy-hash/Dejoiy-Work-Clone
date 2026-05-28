@@ -6,6 +6,10 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export interface HealthStatus {
-  status: string;
+export interface LeaveRequestInput {
+  type: string;
+  startDate: string;
+  endDate: string;
+  days: number;
+  reason?: string;
 }
