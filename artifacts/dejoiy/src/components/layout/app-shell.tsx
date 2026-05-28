@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
+import dejoiyLogo from "@assets/IMG-20260506-WA0001_1779996360464.jpg";
 import {
   Menu, X, Search, Bell, Home, User, Inbox, Star, FileText, HelpCircle, LogOut,
   Briefcase, BookOpen, IdCard, Mail, BarChart3, Wallet, Users,
@@ -55,17 +56,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-[#F2F2F2] flex flex-col">
       {/* Top Header — Workday style */}
       <header className="bg-white h-14 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30 border-b border-gray-100">
-        <button
-          onClick={() => setMenuOpen(true)}
-          className="p-2 -ml-2 rounded hover:bg-gray-100"
-          data-testid="open-menu"
-        >
-          <Menu className="w-6 h-6 text-gray-800" strokeWidth={2} />
-        </button>
+        <div className="flex items-center gap-3 md:gap-4">
+          <button
+            onClick={() => setMenuOpen(true)}
+            className="p-2 -ml-2 rounded hover:bg-gray-100"
+            data-testid="open-menu"
+          >
+            <Menu className="w-6 h-6 text-gray-800" strokeWidth={2} />
+          </button>
 
-        <div className="hidden md:flex items-center gap-2">
-          <div className="w-7 h-7 rounded bg-[#0875E1] flex items-center justify-center text-white font-black text-sm">D</div>
-          <span className="font-bold text-gray-900 text-lg tracking-tight">Dejoiy</span>
+          <Link href="/dashboard" className="hidden md:flex items-center gap-2" data-testid="header-logo">
+            <img src={dejoiyLogo} alt="Dejoiy" className="h-9 w-9 rounded-md object-cover" />
+            <span className="font-extrabold text-[#0E1B4D] text-xl tracking-tight">Dejoiy</span>
+          </Link>
         </div>
 
         <div className="flex items-center gap-1">
