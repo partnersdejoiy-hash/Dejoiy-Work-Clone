@@ -220,6 +220,314 @@ export interface AnnouncementInput {
   type?: string;
 }
 
+export interface AnalyticsOverview {
+  totalEmployees: number;
+  monthlyHires: number;
+  avgTenureMonths: number;
+  turnoverRate: number;
+  totalPayroll: number;
+  totalExpenses: number;
+  openPositions: number;
+  avgPerformanceRating: number;
+}
+
+export interface HeadcountData {
+  department: string;
+  count: number;
+}
+
+export interface TaskStats {
+  status: string;
+  count: number;
+}
+
+export interface ExpenseTrend {
+  month: string;
+  amount: number;
+  count: number;
+}
+
+export interface LeaveBreakdown {
+  type: string;
+  count: number;
+  totalDays: number;
+}
+
+export interface Goal {
+  id: number;
+  employeeId: number;
+  title: string;
+  /** @nullable */
+  description?: string | null;
+  category: string;
+  progress: number;
+  status: string;
+  /** @nullable */
+  dueDate?: string | null;
+  createdAt: string;
+}
+
+export interface GoalInput {
+  title: string;
+  description?: string;
+  category?: string;
+  progress?: number;
+  status?: string;
+  dueDate?: string;
+}
+
+export interface GoalUpdate {
+  title?: string;
+  description?: string;
+  category?: string;
+  progress?: number;
+  status?: string;
+  dueDate?: string;
+}
+
+export interface PerformanceReview {
+  id: number;
+  employeeId: number;
+  reviewerId: number;
+  period: string;
+  overallRating: number;
+  /** @nullable */
+  strengths?: string | null;
+  /** @nullable */
+  improvements?: string | null;
+  /** @nullable */
+  comments?: string | null;
+  status: string;
+  createdAt: string;
+}
+
+export interface PerformanceReviewInput {
+  employeeId: number;
+  reviewerId: number;
+  period: string;
+  overallRating: number;
+  strengths?: string;
+  improvements?: string;
+  comments?: string;
+}
+
+export interface PerformanceReviewUpdate {
+  overallRating?: number;
+  strengths?: string;
+  improvements?: string;
+  comments?: string;
+  status?: string;
+}
+
+export interface PayrollRecord {
+  id: number;
+  employeeId: number;
+  period: string;
+  baseSalary: number;
+  bonus: number;
+  deductions: number;
+  netPay: number;
+  status: string;
+  /** @nullable */
+  paidAt?: string | null;
+  createdAt: string;
+}
+
+export interface PayrollInput {
+  employeeId: number;
+  period: string;
+  baseSalary: number;
+  bonus?: number;
+  deductions?: number;
+  netPay: number;
+}
+
+export interface PayrollUpdate {
+  status?: string;
+  paidAt?: string;
+  bonus?: number;
+  deductions?: number;
+  netPay?: number;
+}
+
+export interface JobPosting {
+  id: number;
+  title: string;
+  department: string;
+  location: string;
+  type: string;
+  description: string;
+  /** @nullable */
+  requirements?: string | null;
+  /** @nullable */
+  salaryMin?: number | null;
+  /** @nullable */
+  salaryMax?: number | null;
+  status: string;
+  postedById: number;
+  createdAt: string;
+}
+
+export interface JobPostingInput {
+  title: string;
+  department: string;
+  location?: string;
+  type?: string;
+  description: string;
+  requirements?: string;
+  salaryMin?: number;
+  salaryMax?: number;
+}
+
+export interface JobPostingUpdate {
+  title?: string;
+  department?: string;
+  location?: string;
+  type?: string;
+  description?: string;
+  requirements?: string;
+  salaryMin?: number;
+  salaryMax?: number;
+  status?: string;
+}
+
+export interface Application {
+  id: number;
+  jobPostingId: number;
+  applicantName: string;
+  applicantEmail: string;
+  /** @nullable */
+  phone?: string | null;
+  /** @nullable */
+  resumeUrl?: string | null;
+  /** @nullable */
+  coverLetter?: string | null;
+  status: string;
+  /** @nullable */
+  notes?: string | null;
+  appliedAt: string;
+}
+
+export interface ApplicationInput {
+  applicantName: string;
+  applicantEmail: string;
+  phone?: string;
+  coverLetter?: string;
+  notes?: string;
+}
+
+export interface ApplicationUpdate {
+  status?: string;
+  notes?: string;
+}
+
+export interface Timesheet {
+  id: number;
+  employeeId: number;
+  date: string;
+  hoursWorked: number;
+  project: string;
+  /** @nullable */
+  description?: string | null;
+  status: string;
+  createdAt: string;
+}
+
+export interface TimesheetInput {
+  date: string;
+  hoursWorked: number;
+  project: string;
+  description?: string;
+}
+
+export interface TimesheetUpdate {
+  hoursWorked?: number;
+  project?: string;
+  description?: string;
+  status?: string;
+}
+
+export interface DeleteTimesheet200 {
+  success: boolean;
+}
+
+export interface Event {
+  id: number;
+  title: string;
+  /** @nullable */
+  description?: string | null;
+  type: string;
+  startDate: string;
+  endDate: string;
+  /** @nullable */
+  location?: string | null;
+  allDay: boolean;
+  organizerId: number;
+  createdAt: string;
+}
+
+export interface EventInput {
+  title: string;
+  description?: string;
+  type?: string;
+  startDate: string;
+  endDate: string;
+  location?: string;
+  allDay?: boolean;
+}
+
+export interface EventUpdate {
+  title?: string;
+  description?: string;
+  type?: string;
+  startDate?: string;
+  endDate?: string;
+  location?: string;
+  allDay?: boolean;
+}
+
+export interface DeleteEvent200 {
+  success: boolean;
+}
+
+export interface Asset {
+  id: number;
+  name: string;
+  type: string;
+  /** @nullable */
+  serialNumber?: string | null;
+  /** @nullable */
+  assignedToId?: number | null;
+  status: string;
+  /** @nullable */
+  purchaseDate?: string | null;
+  /** @nullable */
+  purchaseValue?: number | null;
+  /** @nullable */
+  notes?: string | null;
+  createdAt: string;
+}
+
+export interface AssetInput {
+  name: string;
+  type: string;
+  serialNumber?: string;
+  assignedToId?: number;
+  status?: string;
+  purchaseDate?: string;
+  purchaseValue?: number;
+  notes?: string;
+}
+
+export interface AssetUpdate {
+  name?: string;
+  type?: string;
+  serialNumber?: string;
+  assignedToId?: number;
+  status?: string;
+  notes?: string;
+}
+
 export type Logout200 = {
   success: boolean;
 };
@@ -234,6 +542,10 @@ export type DeleteTask200 = {
 };
 
 export type MarkAllNotificationsRead200 = {
+  success: boolean;
+};
+
+export type DeleteGoal200 = {
   success: boolean;
 };
 

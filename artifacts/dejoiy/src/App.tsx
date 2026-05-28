@@ -16,6 +16,14 @@ import Expenses from "@/pages/expenses";
 import ItHelp from "@/pages/it-help";
 import Announcements from "@/pages/announcements";
 import Profile from "@/pages/profile";
+import Analytics from "@/pages/analytics";
+import Performance from "@/pages/performance";
+import Payroll from "@/pages/payroll";
+import Recruitment from "@/pages/recruitment";
+import Timesheets from "@/pages/timesheets";
+import Calendar from "@/pages/calendar";
+import OrgChart from "@/pages/org-chart";
+import Assets from "@/pages/assets";
 
 const queryClient = new QueryClient();
 
@@ -54,10 +62,18 @@ function Router() {
       </Route>
       
       <Route path="/dashboard"><ProtectedRoute component={Dashboard} /></Route>
+      <Route path="/analytics"><ProtectedRoute component={Analytics} /></Route>
       <Route path="/people"><ProtectedRoute component={People} /></Route>
+      <Route path="/performance"><ProtectedRoute component={Performance} /></Route>
+      <Route path="/payroll"><ProtectedRoute component={Payroll} /></Route>
+      <Route path="/recruitment"><ProtectedRoute component={Recruitment} /></Route>
       <Route path="/tasks"><ProtectedRoute component={Tasks} /></Route>
+      <Route path="/timesheets"><ProtectedRoute component={Timesheets} /></Route>
       <Route path="/time-off"><ProtectedRoute component={TimeOff} /></Route>
+      <Route path="/calendar"><ProtectedRoute component={Calendar} /></Route>
+      <Route path="/org-chart"><ProtectedRoute component={OrgChart} /></Route>
       <Route path="/expenses"><ProtectedRoute component={Expenses} /></Route>
+      <Route path="/assets"><ProtectedRoute component={Assets} /></Route>
       <Route path="/it-help"><ProtectedRoute component={ItHelp} /></Route>
       <Route path="/announcements"><ProtectedRoute component={Announcements} /></Route>
       <Route path="/profile"><ProtectedRoute component={Profile} /></Route>

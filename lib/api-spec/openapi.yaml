@@ -27,6 +27,22 @@ tags:
     description: IT ticket operations
   - name: announcements
     description: Announcement operations
+  - name: analytics
+    description: Analytics operations
+  - name: goals
+    description: Goal operations
+  - name: performance-reviews
+    description: Performance review operations
+  - name: payroll
+    description: Payroll operations
+  - name: recruitment
+    description: Recruitment operations
+  - name: timesheets
+    description: Timesheet operations
+  - name: calendar
+    description: Calendar operations
+  - name: assets
+    description: Asset operations
 
 paths:
   /healthz:
@@ -539,6 +555,602 @@ paths:
               schema:
                 $ref: "#/components/schemas/Announcement"
 
+  /analytics/overview:
+    get:
+      operationId: getAnalyticsOverview
+      tags: [analytics]
+      summary: Get analytics overview
+      responses:
+        "200":
+          description: Analytics overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsOverview"
+
+  /analytics/headcount:
+    get:
+      operationId: getHeadcountData
+      tags: [analytics]
+      summary: Get headcount data by department
+      responses:
+        "200":
+          description: Headcount data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HeadcountData"
+
+  /analytics/task-stats:
+    get:
+      operationId: getTaskStats
+      tags: [analytics]
+      summary: Get task statistics by status
+      responses:
+        "200":
+          description: Task statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TaskStats"
+
+  /analytics/expense-trends:
+    get:
+      operationId: getExpenseTrends
+      tags: [analytics]
+      summary: Get expense trends
+      responses:
+        "200":
+          description: Expense trends
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExpenseTrend"
+
+  /analytics/leave-breakdown:
+    get:
+      operationId: getLeaveBreakdown
+      tags: [analytics]
+      summary: Get leave breakdown by type
+      responses:
+        "200":
+          description: Leave breakdown
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaveBreakdown"
+
+  /goals:
+    get:
+      operationId: listGoals
+      tags: [goals]
+      summary: List goals
+      responses:
+        "200":
+          description: List of goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Goal"
+    post:
+      operationId: createGoal
+      tags: [goals]
+      summary: Create a new goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalInput"
+      responses:
+        "201":
+          description: Goal created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goal"
+
+  /goals/{id}:
+    patch:
+      operationId: updateGoal
+      tags: [goals]
+      summary: Update goal by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GoalUpdate"
+      responses:
+        "200":
+          description: Goal updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Goal"
+    delete:
+      operationId: deleteGoal
+      tags: [goals]
+      summary: Delete goal by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Goal deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                required: [success]
+
+  /performance-reviews:
+    get:
+      operationId: listPerformanceReviews
+      tags: [performance-reviews]
+      summary: List performance reviews
+      responses:
+        "200":
+          description: List of performance reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PerformanceReview"
+    post:
+      operationId: createPerformanceReview
+      tags: [performance-reviews]
+      summary: Create a new performance review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PerformanceReviewInput"
+      responses:
+        "201":
+          description: Performance review created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PerformanceReview"
+
+  /performance-reviews/{id}:
+    patch:
+      operationId: updatePerformanceReview
+      tags: [performance-reviews]
+      summary: Update performance review by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PerformanceReviewUpdate"
+      responses:
+        "200":
+          description: Performance review updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PerformanceReview"
+
+  /payroll:
+    get:
+      operationId: listPayroll
+      tags: [payroll]
+      summary: List payroll records
+      responses:
+        "200":
+          description: List of payroll records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PayrollRecord"
+    post:
+      operationId: createPayrollRecord
+      tags: [payroll]
+      summary: Create a new payroll record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PayrollInput"
+      responses:
+        "201":
+          description: Payroll record created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayrollRecord"
+
+  /payroll/{id}:
+    patch:
+      operationId: updatePayrollRecord
+      tags: [payroll]
+      summary: Update payroll record by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PayrollUpdate"
+      responses:
+        "200":
+          description: Payroll record updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayrollRecord"
+
+  /job-postings:
+    get:
+      operationId: listJobPostings
+      tags: [recruitment]
+      summary: List job postings
+      responses:
+        "200":
+          description: List of job postings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JobPosting"
+    post:
+      operationId: createJobPosting
+      tags: [recruitment]
+      summary: Create a new job posting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobPostingInput"
+      responses:
+        "201":
+          description: Job posting created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobPosting"
+
+  /job-postings/{id}:
+    patch:
+      operationId: updateJobPosting
+      tags: [recruitment]
+      summary: Update job posting by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobPostingUpdate"
+      responses:
+        "200":
+          description: Job posting updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobPosting"
+
+  /job-postings/{id}/applications:
+    get:
+      operationId: listApplications
+      tags: [recruitment]
+      summary: List applications for a job posting
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Application"
+    post:
+      operationId: createApplication
+      tags: [recruitment]
+      summary: Create a new application
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationInput"
+      responses:
+        "201":
+          description: Application created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+
+  /applications/{id}:
+    patch:
+      operationId: updateApplication
+      tags: [recruitment]
+      summary: Update application status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationUpdate"
+      responses:
+        "200":
+          description: Application updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+
+  /timesheets:
+    get:
+      operationId: listTimesheets
+      tags: [timesheets]
+      summary: List timesheets
+      responses:
+        "200":
+          description: List of timesheets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Timesheet"
+    post:
+      operationId: createTimesheet
+      tags: [timesheets]
+      summary: Create a new timesheet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TimesheetInput"
+      responses:
+        "201":
+          description: Timesheet created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Timesheet"
+
+  /timesheets/{id}:
+    patch:
+      operationId: updateTimesheet
+      tags: [timesheets]
+      summary: Update timesheet by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TimesheetUpdate"
+      responses:
+        "200":
+          description: Timesheet updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Timesheet"
+    delete:
+      operationId: deleteTimesheet
+      tags: [timesheets]
+      summary: Delete timesheet by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Timesheet deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteTimesheet200"
+
+  /events:
+    get:
+      operationId: listEvents
+      tags: [calendar]
+      summary: List events
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+    post:
+      operationId: createEvent
+      tags: [calendar]
+      summary: Create a new event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventInput"
+      responses:
+        "201":
+          description: Event created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+
+  /events/{id}:
+    patch:
+      operationId: updateEvent
+      tags: [calendar]
+      summary: Update event by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EventUpdate"
+      responses:
+        "200":
+          description: Event updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+    delete:
+      operationId: deleteEvent
+      tags: [calendar]
+      summary: Delete event by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Event deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteEvent200"
+
+  /assets:
+    get:
+      operationId: listAssets
+      tags: [assets]
+      summary: List assets
+      responses:
+        "200":
+          description: List of assets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Asset"
+    post:
+      operationId: createAsset
+      tags: [assets]
+      summary: Create a new asset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssetInput"
+      responses:
+        "201":
+          description: Asset created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Asset"
+
+  /assets/{id}:
+    patch:
+      operationId: updateAsset
+      tags: [assets]
+      summary: Update asset by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssetUpdate"
+      responses:
+        "200":
+          description: Asset updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Asset"
+
 components:
   schemas:
     HealthStatus:
@@ -779,3 +1391,344 @@ components:
         title: { type: string }
         content: { type: string }
         type: { type: string }
+
+    AnalyticsOverview:
+      type: object
+      required: [totalEmployees, monthlyHires, avgTenureMonths, turnoverRate, totalPayroll, totalExpenses, openPositions, avgPerformanceRating]
+      properties:
+        totalEmployees: { type: integer }
+        monthlyHires: { type: integer }
+        avgTenureMonths: { type: number }
+        turnoverRate: { type: number }
+        totalPayroll: { type: number }
+        totalExpenses: { type: number }
+        openPositions: { type: integer }
+        avgPerformanceRating: { type: number }
+
+    HeadcountData:
+      type: object
+      required: [department, count]
+      properties:
+        department: { type: string }
+        count: { type: integer }
+
+    TaskStats:
+      type: object
+      required: [status, count]
+      properties:
+        status: { type: string }
+        count: { type: integer }
+
+    ExpenseTrend:
+      type: object
+      required: [month, amount, count]
+      properties:
+        month: { type: string }
+        amount: { type: number }
+        count: { type: integer }
+
+    LeaveBreakdown:
+      type: object
+      required: [type, count, totalDays]
+      properties:
+        type: { type: string }
+        count: { type: integer }
+        totalDays: { type: integer }
+
+    Goal:
+      type: object
+      required: [id, employeeId, title, category, progress, status, createdAt]
+      properties:
+        id: { type: integer }
+        employeeId: { type: integer }
+        title: { type: string }
+        description: { type: ["string", "null"] }
+        category: { type: string }
+        progress: { type: integer }
+        status: { type: string }
+        dueDate: { type: ["string", "null"] }
+        createdAt: { type: string }
+
+    GoalInput:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        category: { type: string }
+        progress: { type: integer }
+        status: { type: string }
+        dueDate: { type: string }
+
+    GoalUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        description: { type: string }
+        category: { type: string }
+        progress: { type: integer }
+        status: { type: string }
+        dueDate: { type: string }
+
+    PerformanceReview:
+      type: object
+      required: [id, employeeId, reviewerId, period, overallRating, status, createdAt]
+      properties:
+        id: { type: integer }
+        employeeId: { type: integer }
+        reviewerId: { type: integer }
+        period: { type: string }
+        overallRating: { type: integer }
+        strengths: { type: ["string", "null"] }
+        improvements: { type: ["string", "null"] }
+        comments: { type: ["string", "null"] }
+        status: { type: string }
+        createdAt: { type: string }
+
+    PerformanceReviewInput:
+      type: object
+      required: [employeeId, reviewerId, period, overallRating]
+      properties:
+        employeeId: { type: integer }
+        reviewerId: { type: integer }
+        period: { type: string }
+        overallRating: { type: integer }
+        strengths: { type: string }
+        improvements: { type: string }
+        comments: { type: string }
+
+    PerformanceReviewUpdate:
+      type: object
+      properties:
+        overallRating: { type: integer }
+        strengths: { type: string }
+        improvements: { type: string }
+        comments: { type: string }
+        status: { type: string }
+
+    PayrollRecord:
+      type: object
+      required: [id, employeeId, period, baseSalary, bonus, deductions, netPay, status, createdAt]
+      properties:
+        id: { type: integer }
+        employeeId: { type: integer }
+        period: { type: string }
+        baseSalary: { type: number }
+        bonus: { type: number }
+        deductions: { type: number }
+        netPay: { type: number }
+        status: { type: string }
+        paidAt: { type: ["string", "null"] }
+        createdAt: { type: string }
+
+    PayrollInput:
+      type: object
+      required: [employeeId, period, baseSalary, netPay]
+      properties:
+        employeeId: { type: integer }
+        period: { type: string }
+        baseSalary: { type: number }
+        bonus: { type: number }
+        deductions: { type: number }
+        netPay: { type: number }
+
+    PayrollUpdate:
+      type: object
+      properties:
+        status: { type: string }
+        paidAt: { type: string }
+        bonus: { type: number }
+        deductions: { type: number }
+        netPay: { type: number }
+
+    JobPosting:
+      type: object
+      required: [id, title, department, location, type, description, status, postedById, createdAt]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        department: { type: string }
+        location: { type: string }
+        type: { type: string }
+        description: { type: string }
+        requirements: { type: ["string", "null"] }
+        salaryMin: { type: ["integer", "null"] }
+        salaryMax: { type: ["integer", "null"] }
+        status: { type: string }
+        postedById: { type: integer }
+        createdAt: { type: string }
+
+    JobPostingInput:
+      type: object
+      required: [title, department, description]
+      properties:
+        title: { type: string }
+        department: { type: string }
+        location: { type: string }
+        type: { type: string }
+        description: { type: string }
+        requirements: { type: string }
+        salaryMin: { type: integer }
+        salaryMax: { type: integer }
+
+    JobPostingUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        department: { type: string }
+        location: { type: string }
+        type: { type: string }
+        description: { type: string }
+        requirements: { type: string }
+        salaryMin: { type: integer }
+        salaryMax: { type: integer }
+        status: { type: string }
+
+    Application:
+      type: object
+      required: [id, jobPostingId, applicantName, applicantEmail, status, appliedAt]
+      properties:
+        id: { type: integer }
+        jobPostingId: { type: integer }
+        applicantName: { type: string }
+        applicantEmail: { type: string }
+        phone: { type: ["string", "null"] }
+        resumeUrl: { type: ["string", "null"] }
+        coverLetter: { type: ["string", "null"] }
+        status: { type: string }
+        notes: { type: ["string", "null"] }
+        appliedAt: { type: string }
+
+    ApplicationInput:
+      type: object
+      required: [applicantName, applicantEmail]
+      properties:
+        applicantName: { type: string }
+        applicantEmail: { type: string }
+        phone: { type: string }
+        coverLetter: { type: string }
+        notes: { type: string }
+
+    ApplicationUpdate:
+      type: object
+      properties:
+        status: { type: string }
+        notes: { type: string }
+
+    Timesheet:
+      type: object
+      required: [id, employeeId, date, hoursWorked, project, status, createdAt]
+      properties:
+        id: { type: integer }
+        employeeId: { type: integer }
+        date: { type: string }
+        hoursWorked: { type: number }
+        project: { type: string }
+        description: { type: ["string", "null"] }
+        status: { type: string }
+        createdAt: { type: string }
+
+    TimesheetInput:
+      type: object
+      required: [date, hoursWorked, project]
+      properties:
+        date: { type: string }
+        hoursWorked: { type: number }
+        project: { type: string }
+        description: { type: string }
+
+    TimesheetUpdate:
+      type: object
+      properties:
+        hoursWorked: { type: number }
+        project: { type: string }
+        description: { type: string }
+        status: { type: string }
+
+    DeleteTimesheet200:
+      type: object
+      required: [success]
+      properties:
+        success: { type: boolean }
+
+    Event:
+      type: object
+      required: [id, title, type, startDate, endDate, allDay, organizerId, createdAt]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        description: { type: ["string", "null"] }
+        type: { type: string }
+        startDate: { type: string }
+        endDate: { type: string }
+        location: { type: ["string", "null"] }
+        allDay: { type: boolean }
+        organizerId: { type: integer }
+        createdAt: { type: string }
+
+    EventInput:
+      type: object
+      required: [title, startDate, endDate]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        type: { type: string }
+        startDate: { type: string }
+        endDate: { type: string }
+        location: { type: string }
+        allDay: { type: boolean }
+
+    EventUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        description: { type: string }
+        type: { type: string }
+        startDate: { type: string }
+        endDate: { type: string }
+        location: { type: string }
+        allDay: { type: boolean }
+
+    DeleteEvent200:
+      type: object
+      required: [success]
+      properties:
+        success: { type: boolean }
+
+    Asset:
+      type: object
+      required: [id, name, type, status, createdAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        type: { type: string }
+        serialNumber: { type: ["string", "null"] }
+        assignedToId: { type: ["integer", "null"] }
+        status: { type: string }
+        purchaseDate: { type: ["string", "null"] }
+        purchaseValue: { type: ["number", "null"] }
+        notes: { type: ["string", "null"] }
+        createdAt: { type: string }
+
+    AssetInput:
+      type: object
+      required: [name, type]
+      properties:
+        name: { type: string }
+        type: { type: string }
+        serialNumber: { type: string }
+        assignedToId: { type: integer }
+        status: { type: string }
+        purchaseDate: { type: string }
+        purchaseValue: { type: number }
+        notes: { type: string }
+
+    AssetUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        type: { type: string }
+        serialNumber: { type: string }
+        assignedToId: { type: integer }
+        status: { type: string }
+        notes: { type: string }

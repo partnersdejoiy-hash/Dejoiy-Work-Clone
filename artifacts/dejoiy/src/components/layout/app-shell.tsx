@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { 
   LayoutDashboard, Users, CheckSquare, Calendar, 
-  Receipt, Laptop, Megaphone, LogOut, Bell, Menu, X, Check
+  Receipt, Laptop, Megaphone, LogOut, Bell, Menu, X, Check,
+  BarChart2, Star, DollarSign, UserPlus, Clock, CalendarDays, Network, Monitor
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -11,10 +12,18 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const NAV_ITEMS = [
   { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { path: "/analytics", label: "Analytics", icon: BarChart2 },
   { path: "/people", label: "People", icon: Users },
+  { path: "/performance", label: "Performance", icon: Star },
+  { path: "/payroll", label: "Payroll", icon: DollarSign },
+  { path: "/recruitment", label: "Recruitment", icon: UserPlus },
   { path: "/tasks", label: "Tasks", icon: CheckSquare },
+  { path: "/timesheets", label: "Timesheets", icon: Clock },
   { path: "/time-off", label: "Time Off", icon: Calendar },
+  { path: "/calendar", label: "Calendar", icon: CalendarDays },
+  { path: "/org-chart", label: "Org Chart", icon: Network },
   { path: "/expenses", label: "Expenses", icon: Receipt },
+  { path: "/assets", label: "IT Assets", icon: Monitor },
   { path: "/it-help", label: "IT Help", icon: Laptop },
   { path: "/announcements", label: "Announcements", icon: Megaphone },
 ];
