@@ -1,0 +1,44 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "7A-4m24rWWa7cHvjRqGQB"
+uri = "file://artifacts/dejoiy/public/images/hero.png"
+type = "image"
+title = "Hero visualization"
+
+[[generated]]
+id = "y-4A7CsbbBoIrZf8A_BJB"
+uri = "file://artifacts/dejoiy/public/images/hr.png"
+type = "image"
+title = "HR department"
+
+[[generated]]
+id = "vXpzrge9kSNdD3-bDw9md"
+uri = "file://artifacts/dejoiy/public/images/finance.png"
+type = "image"
+title = "Finance charts"
+
+[[generated]]
+id = "ThZ3J278HEEaHCT0xMGrA"
+uri = "file://artifacts/dejoiy/public/images/it.png"
+type = "image"
+title = "IT cloud nodes"
+
+[[generated]]
+id = "BlBcS1l2ja7eRh2iYWpo6"
+uri = "file://artifacts/dejoiy/public/images/legal.png"
+type = "image"
+title = "Legal abstract"
+
+[[generated]]
+id = "TyykrEv-c7j1_zOqa8Mh7"
+uri = "file://artifacts/dejoiy/public/images/operations.png"
+type = "image"
+title = "Operations logistics"
+
+[[generated]]
+id = "PA-2qghZNL5zqeBETVFQV"
+uri = "file://artifacts/dejoiy/public/images/ai-feature.png"
+type = "image"
+title = "AI Feature brain"
