@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useUpdateUser } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Users, MapPin, ChevronRight, X, Camera, Loader2 } from "lucide-react";
+import { Mail, Users, MapPin, ChevronRight, X, Camera, Loader2, Copy, Check } from "lucide-react";
 
 export default function Profile() {
   const { user } = useAuth();
@@ -14,6 +14,8 @@ export default function Profile() {
   const [editOpen, setEditOpen] = useState(false);
   const [showAllSections, setShowAllSections] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [emailCopied, setEmailCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: user?.name || "",
@@ -132,17 +134,88 @@ export default function Profile() {
         </button>
 
         <div className="flex justify-center gap-8 mt-6">
-          <a href={`mailto:${user.email}`} className="flex flex-col items-center gap-1.5">
-            <div className="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50">
-              <Mail className="w-5 h-5 text-gray-700" />
-            </div>
-            <span className="text-xs text-gray-700">Email</span>
-          </a>
+          <div className="relative flex flex-col items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => { setEmailOpen((v) => !v); setEmailCopied(false); }}
+              className="w-12 h-12 rounded-full border border-gray-300 dark:border-white/10 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-white/5"
+              aria-haspopup="dialog"
+              aria-expanded={emailOpen}
+              data-testid="open-email-popover"
+            >
+              <Mail className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+            </button>
+            <span className="text-xs text-gray-700 dark:text-gray-300">Email</span>
+
+            {emailOpen && (
+              <>
+                <div className="fixed inset-0 z-30" onClick={() => setEmailOpen(false)} />
+                <div
+                  role="dialog"
+                  aria-label="Work email"
+                  className="absolute top-14 left-1/2 -translate-x-1/2 z-40 w-72 rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.25)] p-4 text-left"
+                  data-testid="email-popover"
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                      Work Email
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEmailOpen(false)}
+                      className="-mt-1 -mr-1 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-white/10"
+                      aria-label="Close"
+                    >
+                      <X className="w-3.5 h-3.5 text-gray-500" />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shrink-0">
+                      <Mail className="w-4 h-4 text-white" />
+                    </div>
+                    <a
+                      href={`mailto:${user.email}`}
+                      className="flex-1 text-sm font-medium text-[#0875E1] dark:text-blue-400 break-all hover:underline"
+                      data-testid="email-popover-address"
+                    >
+                      {user.email}
+                    </a>
+                  </div>
+                  <div className="mt-3 flex gap-2">
+                    <a
+                      href={`mailto:${user.email}`}
+                      className="flex-1 text-center text-xs font-semibold py-2 rounded-lg bg-[#0875E1] hover:bg-[#0866c4] text-white"
+                    >
+                      Send Email
+                    </a>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(user.email);
+                          setEmailCopied(true);
+                          setTimeout(() => setEmailCopied(false), 1500);
+                        } catch {}
+                      }}
+                      className="flex-1 text-xs font-semibold py-2 rounded-lg border border-gray-300 dark:border-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center justify-center gap-1.5"
+                      data-testid="copy-email-button"
+                    >
+                      {emailCopied ? (
+                        <><Check className="w-3.5 h-3.5 text-green-600" /> Copied</>
+                      ) : (
+                        <><Copy className="w-3.5 h-3.5" /> Copy</>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
           <a href="/org-chart" className="flex flex-col items-center gap-1.5">
-            <div className="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50">
-              <Users className="w-5 h-5 text-gray-700" />
+            <div className="w-12 h-12 rounded-full border border-gray-300 dark:border-white/10 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-white/5">
+              <Users className="w-5 h-5 text-gray-700 dark:text-gray-300" />
             </div>
-            <span className="text-xs text-gray-700">Team</span>
+            <span className="text-xs text-gray-700 dark:text-gray-300">Team</span>
           </a>
         </div>
 
