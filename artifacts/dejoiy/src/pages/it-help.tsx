@@ -45,7 +45,8 @@ export default function ItHelp() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<any>(null);
   
-  const { data: tickets } = useListItTickets();
+  const { data: ticketsRaw } = useListItTickets();
+  const tickets = Array.isArray(ticketsRaw) ? ticketsRaw : [];
   const createTicket = useCreateItTicket();
   const updateTicket = useUpdateItTicket();
   
@@ -53,9 +54,9 @@ export default function ItHelp() {
     title: "", description: "", category: "hardware", priority: "medium"
   });
 
-  const openCount = tickets?.filter(t => t.status === "open").length || 0;
-  const inProgressCount = tickets?.filter(t => t.status === "in_progress").length || 0;
-  const resolvedCount = tickets?.filter(t => t.status === "resolved").length || 0;
+  const openCount = tickets.filter(t => t.status === "open").length || 0;
+  const inProgressCount = tickets.filter(t => t.status === "in_progress").length || 0;
+  const resolvedCount = tickets.filter(t => t.status === "resolved").length || 0;
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();

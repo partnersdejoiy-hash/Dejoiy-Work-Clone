@@ -33,8 +33,10 @@ export default function Tasks() {
   const { toast } = useToast();
   
   const [filter, setFilter] = useState("all");
-  const { data: tasks } = useListTasks();
-  const { data: users } = useListUsers();
+  const { data: tasksRaw } = useListTasks();
+  const { data: usersRaw } = useListUsers();
+  const tasks = Array.isArray(tasksRaw) ? tasksRaw : [];
+  const users = Array.isArray(usersRaw) ? usersRaw : [];
   
   const createTask = useCreateTask();
   const updateTask = useUpdateTask();
@@ -47,7 +49,7 @@ export default function Tasks() {
     title: "", description: "", assigneeId: "", status: "todo", priority: "medium", dueDate: ""
   });
 
-  const displayTasks = tasks?.filter(t => filter === "all" || t.assigneeId === user?.id) || [];
+  const displayTasks = tasks.filter(t => filter === "all" || t.assigneeId === user?.id) || [];
 
   const handleOpenNew = () => {
     setEditingTask(null);
@@ -126,7 +128,7 @@ export default function Tasks() {
                   <Badge variant="outline" className={`${getPriorityColor(task.priority)} border-none text-[10px] px-1.5 py-0`}>{task.priority}</Badge>
                 </div>
                 <div className="flex justify-between items-center text-xs text-gray-500">
-                  <span>{users?.find(u => u.id === task.assigneeId)?.name || 'Unassigned'}</span>
+                  <span>{users.find(u => u.id === task.assigneeId)?.name || 'Unassigned'}</span>
                   {task.dueDate && (
                     <span className={`flex items-center gap-1 ${isOverdue(task.dueDate) ? 'text-red-500 font-medium' : ''}`}>
                       <Clock className="w-3 h-3" />
@@ -199,7 +201,7 @@ export default function Tasks() {
                   <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="unassigned">Unassigned</SelectItem>
-                    {users?.map(u => <SelectItem key={u.id} value={u.id.toString()}>{u.name}</SelectItem>)}
+                    {users.map(u => <SelectItem key={u.id} value={u.id.toString()}>{u.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>

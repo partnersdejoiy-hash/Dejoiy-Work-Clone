@@ -32,7 +32,8 @@ export default function Announcements() {
   const { toast } = useToast();
   
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: announcements } = useListAnnouncements();
+  const { data: announcementsRaw } = useListAnnouncements();
+  const announcements = Array.isArray(announcementsRaw) ? announcementsRaw : [];
   const createAnnouncement = useCreateAnnouncement();
   
   const [formData, setFormData] = useState({
@@ -90,7 +91,7 @@ export default function Announcements() {
       </div>
 
       <div className="space-y-6">
-        {!announcements?.length ? (
+        {announcements.length === 0 ? (
           <div className="text-center py-12 text-gray-500 bg-white rounded-xl border border-gray-100">No announcements yet.</div>
         ) : (
           announcements.map(ann => (

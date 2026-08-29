@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useListUsers, useCreateUser, getListUsersQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,8 @@ const getDeptColor = (dept?: string | null) => {
 
 export default function People() {
   const { user } = useAuth();
-  const { data: users, isLoading } = useListUsers();
+  const { data: usersRaw, isLoading } = useListUsers();
+  const users = Array.isArray(usersRaw) ? usersRaw : [];
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const createUser = useCreateUser();
@@ -42,7 +44,7 @@ export default function People() {
 
   const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "employee", department: "Engineering", jobTitle: "" });
 
-  const filteredUsers = users?.filter(u => {
+  const filteredUsers = users.filter(u => {
     const matchesSearch = u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase());
     const matchesDept = deptFilter === "all" || u.department === deptFilter;
     const matchesRole = roleFilter === "all" || u.role === roleFilter;
@@ -139,11 +141,12 @@ export default function People() {
         <div className="text-center py-12 text-gray-500">No employees found.</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredUsers?.map(u => (
-            <Card key={u.id} className="shadow-sm hover:shadow-md transition-shadow">
+          {filteredUsers.map(u => (
+            <Link key={u.id} href={`/people/${u.id}`}>
+            <Card className="shadow-sm hover:shadow-md transition-shadow cursor-pointer">
               <CardContent className="p-6 flex flex-col items-center text-center">
                 <Avatar className="w-20 h-20 mb-4 border-2 border-white shadow-sm">
-                  <AvatarFallback className={`text-xl font-bold ${getDeptColor(u.department)}`}>{u.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className={`text-xl font-bold ${getDeptColor(u.department)}`}>{(u.name || "?").charAt(0)}</AvatarFallback>
                 </Avatar>
                 <h3 className="font-bold text-[#0E1B4D] mb-1">{u.name}</h3>
                 <p className="text-sm text-gray-500 mb-3">{u.jobTitle}</p>
@@ -154,6 +157,7 @@ export default function People() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))}
         </div>
       )}

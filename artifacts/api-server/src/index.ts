@@ -1,6 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
-import { seed } from "./lib/seed";
+import { seedEnterprise } from "./lib/seed-enterprise";
 
 const rawPort = process.env["PORT"];
 
@@ -17,8 +17,8 @@ if (Number.isNaN(port) || port <= 0) {
 }
 
 // Run seed on startup
-seed().catch((err) => {
-  logger.error({ err }, "Failed to seed database");
+seedEnterprise().catch((err) => {
+  logger.error({ err }, "Failed to seed enterprise database");
 });
 
 app.listen(port, (err) => {

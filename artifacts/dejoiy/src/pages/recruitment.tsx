@@ -21,10 +21,12 @@ export default function Recruitment() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   
-  const { data: jobPostings } = useListJobPostings();
+  const { data: jobPostingsRaw } = useListJobPostings();
+  const jobPostings = Array.isArray(jobPostingsRaw) ? jobPostingsRaw : [];
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
   
-  const { data: applications } = useListApplications(selectedJobId as number, { query: { enabled: !!selectedJobId, queryKey: getListApplicationsQueryKey(selectedJobId as number) } });
+  const { data: applicationsRaw } = useListApplications(selectedJobId as number, { query: { enabled: !!selectedJobId, queryKey: getListApplicationsQueryKey(selectedJobId as number) } });
+  const applications = Array.isArray(applicationsRaw) ? applicationsRaw : [];
   
   const createJob = useCreateJobPosting();
   const updateJob = useUpdateJobPosting();
@@ -101,7 +103,7 @@ export default function Recruitment() {
         {/* Left Panel: Jobs */}
         <div className="w-1/3 flex flex-col gap-4 overflow-y-auto pr-2">
           <h2 className="text-xl font-bold sticky top-0 bg-[#F5F7FA] pb-2">Job Postings</h2>
-          {jobPostings?.map(job => (
+          {jobPostings.map(job => (
             <Card 
               key={job.id} 
               className={`cursor-pointer transition-all ${selectedJobId === job.id ? 'ring-2 ring-[#F26522] border-transparent shadow-md' : 'hover:border-gray-300'}`}
@@ -127,7 +129,7 @@ export default function Recruitment() {
           {selectedJobId ? (
             <>
               <div className="p-4 border-b flex justify-between items-center bg-gray-50/50">
-                <h2 className="text-lg font-bold text-[#0E1B4D]">Pipeline: {jobPostings?.find(j => j.id === selectedJobId)?.title}</h2>
+                <h2 className="text-lg font-bold text-[#0E1B4D]">Pipeline: {jobPostings.find(j => j.id === selectedJobId)?.title}</h2>
                 <Button variant="outline" size="sm" onClick={() => setIsAppModalOpen(true)}>
                   <Plus className="w-4 h-4 mr-1" /> Add Applicant
                 </Button>
@@ -135,7 +137,7 @@ export default function Recruitment() {
               <div className="flex-1 overflow-x-auto p-4">
                 <div className="flex gap-4 min-w-max h-full">
                   {columns.map(col => {
-                    const colApps = applications?.filter(a => a.status === col.id) || [];
+                    const colApps = applications.filter(a => a.status === col.id) || [];
                     return (
                       <div key={col.id} className="w-64 flex flex-col bg-gray-50 rounded-lg p-3 h-full">
                         <div className="flex justify-between items-center mb-3">

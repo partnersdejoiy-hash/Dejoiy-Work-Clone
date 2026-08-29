@@ -34,7 +34,8 @@ export default function Expenses() {
   
   const [tab, setTab] = useState("my");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: expenses } = useListExpenses();
+  const { data: expensesRaw } = useListExpenses();
+  const expenses = Array.isArray(expensesRaw) ? expensesRaw : [];
   
   const createExpense = useCreateExpense();
   const updateExpense = useUpdateExpense();
@@ -43,23 +44,38 @@ export default function Expenses() {
     title: "", amount: "", category: "travel", expenseDate: "", notes: ""
   });
 
-  const displayExpenses = expenses?.filter(e => tab === "all" ? true : e.employeeId === user?.id) || [];
+  const displayExpenses = expenses.filter(e => tab === "all" ? true : e.employeeId === user?.id) || [];
   
-  const myExpenses = expenses?.filter(e => e.employeeId === user?.id) || [];
+  const myExpenses = expenses.filter(e => e.employeeId === user?.id) || [];
   const pendingAmount = myExpenses.filter(e => e.status === "pending").reduce((sum, e) => sum + Number(e.amount), 0);
   const approvedAmount = myExpenses.filter(e => e.status === "approved").reduce((sum, e) => sum + Number(e.amount), 0);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createExpense.mutateAsync({ 
+      const result = await createExpense.mutateAsync({ 
         data: { 
           ...formData, 
           amount: Number(formData.amount) 
         } 
       });
+      // Create approval request for workflow
+      try {
+        await fetch("/api/approvals", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            entityType: "expense",
+            entityId: (result as any)?.id || 0,
+            title: `Expense Report — ${formData.title}`,
+            summary: `₹${formData.amount} for ${formData.category}${formData.notes ? `: ${formData.notes}` : ""}`,
+            amount: formData.amount,
+            priority: "normal",
+          }),
+        });
+      } catch {}
       queryClient.invalidateQueries({ queryKey: getListExpensesQueryKey() });
-      toast({ title: "Expense submitted" });
+      toast({ title: "Expense submitted for approval" });
       setIsModalOpen(false);
       setFormData({ title: "", amount: "", category: "travel", expenseDate: "", notes: "" });
     } catch (err) {
