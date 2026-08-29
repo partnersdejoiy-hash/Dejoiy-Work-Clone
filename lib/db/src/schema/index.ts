@@ -13,3 +13,9 @@ export * from "./applications";
 export * from "./timesheets";
 export * from "./events";
 export * from "./assets";
+// Enterprise foundation
+export * from "./departments";
+export * from "./rbac";
+export * from "./approvals";
+export * from "./auditLogs";
+export * from "./documents";

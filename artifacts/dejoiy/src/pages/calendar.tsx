@@ -28,7 +28,8 @@ export default function Calendar() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   
-  const { data: events } = useListEvents();
+  const { data: eventsRaw } = useListEvents();
+  const events = Array.isArray(eventsRaw) ? eventsRaw : [];
   const createEvent = useCreateEvent();
   const deleteEvent = useDeleteEvent();
 
@@ -45,7 +46,7 @@ export default function Calendar() {
   });
 
   const getEventsForDay = (day: Date) => {
-    return events?.filter(e => isSameDay(new Date(e.startDate), day)) || [];
+    return events.filter(e => isSameDay(new Date(e.startDate), day)) || [];
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -138,7 +139,7 @@ export default function Calendar() {
           <Card>
             <CardHeader><CardTitle className="text-lg">Upcoming</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-              {events?.filter(e => new Date(e.startDate) >= new Date()).slice(0, 5).map(e => (
+              {events.filter(e => new Date(e.startDate) >= new Date()).slice(0, 5).map(e => (
                 <div key={e.id} className="flex gap-3 cursor-pointer group" onClick={() => setViewEvent(e)}>
                   <div className="flex flex-col items-center justify-center w-12 h-12 bg-gray-50 rounded-xl shrink-0 border border-gray-100 group-hover:border-[#F26522] transition-colors">
                     <span className="text-[10px] font-bold text-gray-400 uppercase">{format(new Date(e.startDate), 'MMM')}</span>

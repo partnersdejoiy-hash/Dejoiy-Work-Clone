@@ -20,6 +20,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     query: {
       retry: false,
       staleTime: Infinity,
+      queryKey: ["/api/auth/me"],
     }
   });
 

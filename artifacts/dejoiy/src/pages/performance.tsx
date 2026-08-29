@@ -25,9 +25,12 @@ export default function Performance() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   
-  const { data: goals } = useListGoals();
-  const { data: reviews } = useListPerformanceReviews();
-  const { data: users } = useListUsers();
+  const { data: goalsRaw } = useListGoals();
+  const { data: reviewsRaw } = useListPerformanceReviews();
+  const { data: usersRaw } = useListUsers();
+  const goals = Array.isArray(goalsRaw) ? goalsRaw : [];
+  const reviews = Array.isArray(reviewsRaw) ? reviewsRaw : [];
+  const users = Array.isArray(usersRaw) ? usersRaw : [];
   
   const createGoal = useCreateGoal();
   const updateGoal = useUpdateGoal();
@@ -117,8 +120,8 @@ export default function Performance() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {goals?.map(goal => (
-              <Card key={goal.id} className="cursor-pointer hover:shadow-md transition-all border-l-4" style={{borderLeftColor: goal.status === 'on_track' ? '#10B981' : goal.status === 'at_risk' ? '#EF4444' : goal.status === 'completed' ? '#3B82F6' : '#9CA3AF'}} onClick={() => { setEditingGoal(goal); setGoalForm(goal); setIsGoalModalOpen(true); }}>
+            {goals.map(goal => (
+              <Card key={goal.id} className="cursor-pointer hover:shadow-md transition-all border-l-4" style={{borderLeftColor: goal.status === 'on_track' ? '#10B981' : goal.status === 'at_risk' ? '#EF4444' : goal.status === 'completed' ? '#3B82F6' : '#9CA3AF'}} onClick={() => { setEditingGoal(goal); setGoalForm({ title: goal.title, description: goal.description || "", category: goal.category, dueDate: goal.dueDate || "", progress: goal.progress, status: goal.status }); setIsGoalModalOpen(true); }}>
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
                     <CardTitle className="text-base leading-tight">{goal.title}</CardTitle>
@@ -155,13 +158,13 @@ export default function Performance() {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {reviews?.map(review => (
-              <Card key={review.id} className={canManageReviews ? "cursor-pointer hover:shadow-md" : ""} onClick={() => { if(canManageReviews) { setEditingReview(review); setReviewForm({...review, employeeId: review.employeeId.toString()}); setIsReviewModalOpen(true); } }}>
+            {reviews.map(review => (
+              <Card key={review.id} className={canManageReviews ? "cursor-pointer hover:shadow-md" : ""} onClick={() => { if(canManageReviews) { setEditingReview(review); setReviewForm({ employeeId: review.employeeId.toString(), period: review.period, overallRating: review.overallRating, strengths: review.strengths || "", improvements: review.improvements || "", comments: review.comments || "", status: review.status }); setIsReviewModalOpen(true); } }}>
                 <CardHeader>
                   <div className="flex justify-between items-center">
                     <div>
-                      <CardTitle className="text-lg">{users?.find(u => u.id === review.employeeId)?.name}</CardTitle>
-                      <p className="text-sm text-gray-500">{review.period} • Reviewed by {users?.find(u => u.id === review.reviewerId)?.name}</p>
+                      <CardTitle className="text-lg">{users.find(u => u.id === review.employeeId)?.name}</CardTitle>
+                      <p className="text-sm text-gray-500">{review.period} • Reviewed by {users.find(u => u.id === review.reviewerId)?.name}</p>
                     </div>
                     <div className="flex gap-1 text-yellow-400">
                       {Array.from({length: 5}).map((_, i) => (
@@ -248,7 +251,7 @@ export default function Performance() {
                 <Select disabled={!!editingReview} value={reviewForm.employeeId} onValueChange={v => setReviewForm({...reviewForm, employeeId: v})}>
                   <SelectTrigger><SelectValue placeholder="Select employee" /></SelectTrigger>
                   <SelectContent>
-                    {users?.map(u => <SelectItem key={u.id} value={u.id.toString()}>{u.name}</SelectItem>)}
+                    {users.map(u => <SelectItem key={u.id} value={u.id.toString()}>{u.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>

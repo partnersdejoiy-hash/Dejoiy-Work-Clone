@@ -20,7 +20,8 @@ export default function Dashboard() {
   const greet = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
-  const myTasks = (tasks ?? []).filter((t) => t.assigneeId === user?.id);
+  const tasksArr = Array.isArray(tasks) ? tasks : [];
+  const myTasks = tasksArr.filter((t) => t.assigneeId === user?.id);
   const overdue = myTasks.filter((t) => t.dueDate && new Date(t.dueDate) < new Date());
   const teamSize = users?.length ?? 0;
   const completed = myTasks.filter((t) => t.status === "completed").length;

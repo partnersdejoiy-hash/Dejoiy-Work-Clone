@@ -18,15 +18,19 @@ import applicationsRouter from "./applications";
 import timesheetsRouter from "./timesheets";
 import eventsRouter from "./events";
 import assetsRouter from "./assets";
+import approvalsRouter from "./approvals";
+import auditRouter from "./audit";
 import { requireAuth } from "../middlewares/auth";
+import { loadUserContext } from "../middlewares/rbac";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
 router.use(authRouter);
 
-// Protected routes
+// Protected routes — load RBAC context after auth
 router.use(requireAuth);
+router.use(loadUserContext);
 router.use(dashboardRouter);
 router.use(usersRouter);
 router.use(tasksRouter);
@@ -44,5 +48,7 @@ router.use(applicationsRouter);
 router.use(timesheetsRouter);
 router.use(eventsRouter);
 router.use(assetsRouter);
+router.use(approvalsRouter);
+router.use(auditRouter);
 
 export default router;

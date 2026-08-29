@@ -21,10 +21,14 @@ const COLORS = ['#0E1B4D', '#F26522', '#10B981', '#F59E0B', '#3B82F6', '#8B5CF6'
 
 export default function Analytics() {
   const { data: overview, isLoading: overviewLoading } = useGetAnalyticsOverview();
-  const { data: headcount, isLoading: headcountLoading } = useGetHeadcountData();
-  const { data: taskStats, isLoading: taskStatsLoading } = useGetTaskStats();
-  const { data: expenseTrends, isLoading: expenseTrendsLoading } = useGetExpenseTrends();
-  const { data: leaveBreakdown, isLoading: leaveBreakdownLoading } = useGetLeaveBreakdown();
+  const { data: headcountRaw, isLoading: headcountLoading } = useGetHeadcountData();
+  const { data: taskStatsRaw, isLoading: taskStatsLoading } = useGetTaskStats();
+  const { data: expenseTrendsRaw, isLoading: expenseTrendsLoading } = useGetExpenseTrends();
+  const { data: leaveBreakdownRaw, isLoading: leaveBreakdownLoading } = useGetLeaveBreakdown();
+  const headcount = Array.isArray(headcountRaw) ? headcountRaw : [];
+  const taskStats = Array.isArray(taskStatsRaw) ? taskStatsRaw : [];
+  const expenseTrends = Array.isArray(expenseTrendsRaw) ? expenseTrendsRaw : [];
+  const leaveBreakdown = Array.isArray(leaveBreakdownRaw) ? leaveBreakdownRaw : [];
 
   return (
     <div className="space-y-6">
@@ -78,7 +82,7 @@ export default function Analytics() {
                   <YAxis axisLine={false} tickLine={false} />
                   <Tooltip cursor={{ fill: 'transparent' }} />
                   <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                    {headcount?.map((entry, index) => (
+                    {headcount.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Bar>
@@ -108,7 +112,7 @@ export default function Analytics() {
                     dataKey="count"
                     nameKey="status"
                   >
-                    {taskStats?.map((entry, index) => (
+                    {taskStats.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>

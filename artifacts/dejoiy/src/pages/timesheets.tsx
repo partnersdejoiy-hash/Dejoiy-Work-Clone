@@ -20,7 +20,8 @@ export default function Timesheets() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   
-  const { data: timesheets } = useListTimesheets();
+  const { data: timesheetsRaw } = useListTimesheets();
+  const timesheets = Array.isArray(timesheetsRaw) ? timesheetsRaw : [];
   
   const createTimesheet = useCreateTimesheet();
   const deleteTimesheet = useDeleteTimesheet();
@@ -29,10 +30,10 @@ export default function Timesheets() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState({ date: new Date().toISOString().split('T')[0], project: "", hoursWorked: 8, description: "" });
 
-  const totalHours = timesheets?.reduce((sum, t) => sum + Number(t.hoursWorked), 0) || 0;
+  const totalHours = timesheets.reduce((sum, t) => sum + Number(t.hoursWorked), 0) || 0;
   
   // Basic chart data group by date
-  const chartData = timesheets?.reduce((acc: any[], t) => {
+  const chartData = timesheets.reduce((acc: any[], t) => {
     const dateStr = new Date(t.date).toLocaleDateString(undefined, { weekday: 'short' });
     const existing = acc.find(a => a.name === dateStr);
     if (existing) {
@@ -119,7 +120,7 @@ export default function Timesheets() {
             {timesheets?.length === 0 ? (
               <TableRow><TableCell colSpan={6} className="text-center py-6 text-gray-500">No time logged yet</TableCell></TableRow>
             ) : (
-              timesheets?.map(t => (
+              timesheets.map(t => (
                 <TableRow key={t.id}>
                   <TableCell className="font-medium">{new Date(t.date).toLocaleDateString()}</TableCell>
                   <TableCell>{t.project}</TableCell>

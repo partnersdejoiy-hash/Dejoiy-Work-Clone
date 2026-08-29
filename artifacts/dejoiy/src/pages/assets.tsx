@@ -22,8 +22,10 @@ export default function Assets() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   
-  const { data: assets } = useListAssets();
-  const { data: users } = useListUsers();
+  const { data: assetsRaw } = useListAssets();
+  const { data: usersRaw } = useListUsers();
+  const assets = Array.isArray(assetsRaw) ? assetsRaw : [];
+  const users = Array.isArray(usersRaw) ? usersRaw : [];
   
   const createAsset = useCreateAsset();
   const updateAsset = useUpdateAsset();
@@ -86,19 +88,19 @@ export default function Assets() {
         </Card>
         <Card>
           <CardContent className="p-4 flex flex-col items-center text-center justify-center py-6">
-            <h3 className="text-3xl font-bold text-blue-600 mb-1">{assets?.filter(a => a.status === 'assigned').length || 0}</h3>
+            <h3 className="text-3xl font-bold text-blue-600 mb-1">{assets.filter(a => a.status === 'assigned').length || 0}</h3>
             <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">Assigned</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 flex flex-col items-center text-center justify-center py-6">
-            <h3 className="text-3xl font-bold text-green-600 mb-1">{assets?.filter(a => a.status === 'available').length || 0}</h3>
+            <h3 className="text-3xl font-bold text-green-600 mb-1">{assets.filter(a => a.status === 'available').length || 0}</h3>
             <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">Available</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 flex flex-col items-center text-center justify-center py-6">
-            <h3 className="text-3xl font-bold text-yellow-600 mb-1">{assets?.filter(a => a.status === 'maintenance').length || 0}</h3>
+            <h3 className="text-3xl font-bold text-yellow-600 mb-1">{assets.filter(a => a.status === 'maintenance').length || 0}</h3>
             <p className="text-sm text-gray-500 font-medium uppercase tracking-wider">In Maintenance</p>
           </CardContent>
         </Card>
@@ -116,7 +118,7 @@ export default function Assets() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {assets?.map(asset => (
+            {assets.map(asset => (
               <TableRow key={asset.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
@@ -131,7 +133,7 @@ export default function Assets() {
                 </TableCell>
                 <TableCell className="font-mono text-sm text-gray-500">{asset.serialNumber || '-'}</TableCell>
                 <TableCell>
-                  {asset.assignedToId ? users?.find(u => u.id === asset.assignedToId)?.name : <span className="text-gray-400 italic">Unassigned</span>}
+                  {asset.assignedToId ? users.find(u => u.id === asset.assignedToId)?.name : <span className="text-gray-400 italic">Unassigned</span>}
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline" className={`border-none ${getStatusColor(asset.status)}`}>{asset.status}</Badge>
@@ -178,7 +180,7 @@ export default function Assets() {
                   <SelectTrigger><SelectValue/></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="unassigned">Unassigned</SelectItem>
-                    {users?.map(u => <SelectItem key={u.id} value={u.id.toString()}>{u.name}</SelectItem>)}
+                    {users.map(u => <SelectItem key={u.id} value={u.id.toString()}>{u.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>

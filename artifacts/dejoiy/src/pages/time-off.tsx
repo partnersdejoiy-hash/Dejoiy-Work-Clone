@@ -25,7 +25,8 @@ export default function TimeOff() {
   
   const [tab, setTab] = useState("my");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: requests } = useListLeaveRequests();
+  const { data: requestsRaw } = useListLeaveRequests();
+  const requests = Array.isArray(requestsRaw) ? requestsRaw : [];
   
   const createRequest = useCreateLeaveRequest();
   const updateRequest = useUpdateLeaveRequest();
@@ -34,9 +35,9 @@ export default function TimeOff() {
     type: "vacation", startDate: "", endDate: "", reason: ""
   });
 
-  const displayRequests = requests?.filter(r => tab === "all" ? true : r.employeeId === user?.id) || [];
+  const displayRequests = requests.filter(r => tab === "all" ? true : r.employeeId === user?.id) || [];
   
-  const myApproved = requests?.filter(r => r.employeeId === user?.id && r.status === "approved") || [];
+  const myApproved = requests.filter(r => r.employeeId === user?.id && r.status === "approved") || [];
   const usedVacation = myApproved.filter(r => r.type === "vacation").reduce((sum, r) => sum + r.days, 0);
   const usedSick = myApproved.filter(r => r.type === "sick").reduce((sum, r) => sum + r.days, 0);
   const usedPersonal = myApproved.filter(r => r.type === "personal").reduce((sum, r) => sum + r.days, 0);
@@ -53,9 +54,23 @@ export default function TimeOff() {
     e.preventDefault();
     try {
       const days = calculateDays(formData.startDate, formData.endDate);
-      await createRequest.mutateAsync({ data: { ...formData, days } });
+      const result = await createRequest.mutateAsync({ data: { ...formData, days } });
+      // Create approval request for workflow
+      try {
+        await fetch("/api/approvals", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            entityType: "leave_request",
+            entityId: (result as any)?.id || 0,
+            title: `${(formData.type || "leave").charAt(0).toUpperCase() + (formData.type || "leave").slice(1)} Request — ${days} days`,
+            summary: `${user?.name} requests ${formData.type} from ${formData.startDate} to ${formData.endDate}`,
+            priority: "normal",
+          }),
+        });
+      } catch {}
       queryClient.invalidateQueries({ queryKey: getListLeaveRequestsQueryKey() });
-      toast({ title: "Leave request submitted" });
+      toast({ title: "Leave request submitted for approval" });
       setIsModalOpen(false);
       setFormData({ type: "vacation", startDate: "", endDate: "", reason: "" });
     } catch (err) {

@@ -21,8 +21,10 @@ export default function Payroll() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   
-  const { data: payrollRecords } = useListPayroll();
-  const { data: users } = useListUsers();
+  const { data: payrollRecordsRaw } = useListPayroll();
+  const { data: usersRaw } = useListUsers();
+  const payrollRecords = Array.isArray(payrollRecordsRaw) ? payrollRecordsRaw : [];
+  const users = Array.isArray(usersRaw) ? usersRaw : [];
   
   const createRecord = useCreatePayrollRecord();
   const updateRecord = useUpdatePayrollRecord();
@@ -31,7 +33,7 @@ export default function Payroll() {
   const [form, setForm] = useState({ employeeId: "", period: "", baseSalary: 0, bonus: 0, deductions: 0 });
 
   const isAdmin = user?.role === 'admin';
-  const totalPayroll = payrollRecords?.reduce((sum, r) => sum + r.netPay, 0) || 0;
+  const totalPayroll = payrollRecords.reduce((sum, r) => sum + r.netPay, 0) || 0;
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,9 +115,9 @@ export default function Payroll() {
             {payrollRecords?.length === 0 ? (
               <TableRow><TableCell colSpan={8} className="text-center py-6 text-gray-500">No payroll records</TableCell></TableRow>
             ) : (
-              payrollRecords?.map(record => (
+              payrollRecords.map(record => (
                 <TableRow key={record.id}>
-                  <TableCell className="font-medium">{users?.find(u => u.id === record.employeeId)?.name}</TableCell>
+                  <TableCell className="font-medium">{users.find(u => u.id === record.employeeId)?.name}</TableCell>
                   <TableCell>{record.period}</TableCell>
                   <TableCell>${record.baseSalary.toLocaleString()}</TableCell>
                   <TableCell className="text-green-600">${record.bonus.toLocaleString()}</TableCell>
@@ -155,7 +157,7 @@ export default function Payroll() {
               <Select value={form.employeeId} onValueChange={v => setForm({...form, employeeId: v})}>
                 <SelectTrigger><SelectValue placeholder="Select employee" /></SelectTrigger>
                 <SelectContent>
-                  {users?.map(u => <SelectItem key={u.id} value={u.id.toString()}>{u.name}</SelectItem>)}
+                  {users.map(u => <SelectItem key={u.id} value={u.id.toString()}>{u.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>

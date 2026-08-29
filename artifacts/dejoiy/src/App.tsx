@@ -12,9 +12,13 @@ import { AiAssistant } from "@/components/ai-assistant";
 import NotFound from "@/pages/not-found";
 import Login from "@/pages/login";
 
+import Home from "@/pages/home";
 import Dashboard from "@/pages/dashboard";
+import Approvals from "@/pages/approvals";
+import ManagerWorkspace from "@/pages/manager-workspace";
 import People from "@/pages/people";
-import Tasks from "@/pages/tasks";
+import EmployeeProfile from "@/pages/employee-profile";
+import Tasks from "@/pages/task-center";
 import TimeOff from "@/pages/time-off";
 import Expenses from "@/pages/expenses";
 import ItHelp from "@/pages/it-help";
@@ -67,15 +71,19 @@ function Router({ openCmd, openAi }: { openCmd: () => void; openAi: () => void }
   return (
     <Switch>
       <Route path="/login">
-        {user ? <Redirect to="/dashboard" /> : <Login />}
+        {user ? <Redirect to="/home" /> : <Login />}
       </Route>
       <Route path="/">
-        {user ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
+        {user ? <Redirect to="/home" /> : <Redirect to="/login" />}
       </Route>
-
       <Route path="/dashboard"><ProtectedRoute component={Dashboard} openCmd={openCmd} openAi={openAi} /></Route>
+      <Route path="/home"><ProtectedRoute component={Home} openCmd={openCmd} openAi={openAi} /></Route>
+      <Route path="/approvals"><ProtectedRoute component={Approvals} openCmd={openCmd} openAi={openAi} /></Route>
+      <Route path="/manager"><ProtectedRoute component={ManagerWorkspace} openCmd={openCmd} openAi={openAi} /></Route>
       <Route path="/analytics"><ProtectedRoute component={Analytics} openCmd={openCmd} openAi={openAi} /></Route>
       <Route path="/people"><ProtectedRoute component={People} openCmd={openCmd} openAi={openAi} /></Route>
+      <Route path="/people/:id"><ProtectedRoute component={EmployeeProfile} openCmd={openCmd} openAi={openAi} /></Route>
+      <Route path="/people/:id/:tab"><ProtectedRoute component={EmployeeProfile} openCmd={openCmd} openAi={openAi} /></Route>
       <Route path="/performance"><ProtectedRoute component={Performance} openCmd={openCmd} openAi={openAi} /></Route>
       <Route path="/payroll"><ProtectedRoute component={Payroll} openCmd={openCmd} openAi={openAi} /></Route>
       <Route path="/recruitment"><ProtectedRoute component={Recruitment} openCmd={openCmd} openAi={openAi} /></Route>

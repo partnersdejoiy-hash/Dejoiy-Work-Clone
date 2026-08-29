@@ -6,22 +6,24 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
 export default function OrgChart() {
-  const { data: users } = useListUsers();
+  const { data: usersRaw } = useListUsers();
+  const users = Array.isArray(usersRaw) ? usersRaw : [];
   const [search, setSearch] = useState("");
 
-  const ceo = users?.find(u => u.role === 'admin') || users?.[0];
-  const managers = users?.filter(u => u.role === 'manager' && u.id !== ceo?.id) || [];
-  const employees = users?.filter(u => u.role === 'employee') || [];
+  const ceo = users.find(u => u.department === 'Executive') || users[0];
+  const departments = [...new Set(users.map(u => u.department).filter(Boolean))];
+  const managers = users.filter(u => u.role === 'manager' && u.id !== ceo?.id) || [];
+  const employees = users.filter(u => u.role === 'employee') || [];
 
-  const filteredUsers = search ? users?.filter(u => 
+  const filteredUsers = search ? users.filter(u => 
     u.name.toLowerCase().includes(search.toLowerCase()) || 
     u.department?.toLowerCase().includes(search.toLowerCase()) ||
     u.jobTitle?.toLowerCase().includes(search.toLowerCase())
   ) : null;
 
-  const isHighlighted = (id: number) => {
+  const isHighlighted = (id: number): boolean => {
     if (!search) return false;
-    return filteredUsers?.some(u => u.id === id);
+    return !!filteredUsers?.some(u => u.id === id);
   };
 
   const Node = ({ user, isHighlight }: { user: any, isHighlight: boolean }) => {
@@ -31,7 +33,7 @@ export default function OrgChart() {
         <Card className={`w-48 shadow-sm ${isHighlight ? 'ring-2 ring-[#F26522] border-transparent shadow-lg' : 'border-gray-200'}`}>
           <CardContent className="p-4 flex flex-col items-center text-center">
             <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg mb-3 ${user.role === 'admin' ? 'bg-[#0E1B4D]' : user.role === 'manager' ? 'bg-[#F26522]' : 'bg-gray-400'}`}>
-              {user.name.charAt(0)}
+              {(user.name || "?").charAt(0)}
             </div>
             <h3 className="font-bold text-sm text-[#0E1B4D] leading-tight mb-1">{user.name}</h3>
             <p className="text-xs text-gray-500 mb-2">{user.jobTitle || 'Employee'}</p>
@@ -44,8 +46,11 @@ export default function OrgChart() {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-[#0E1B4D]">Organization Chart</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-[#0E1B4D]">Organization Chart</h1>
+          <p className="text-gray-500 mt-1">{users?.length || 0} employees across {departments.length} departments</p>
+        </div>
         <div className="relative w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input 
@@ -62,7 +67,7 @@ export default function OrgChart() {
           <div className="flex flex-col items-center">
             {/* CEO Level */}
             <div className="relative">
-              <Node user={ceo} isHighlight={isHighlighted(ceo?.id)} />
+              <Node user={ceo} isHighlight={ceo ? isHighlighted(ceo.id) : false} />
               {managers.length > 0 && (
                 <div className="absolute left-1/2 bottom-[-40px] w-px h-10 bg-gray-300" />
               )}

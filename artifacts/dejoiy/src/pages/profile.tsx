@@ -95,9 +95,9 @@ export default function Profile() {
           <div className="relative">
             <div className="w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white text-4xl font-bold ring-4 ring-white overflow-hidden">
               {user.avatarUrl ? (
-                <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                <img src={user.avatarUrl} alt={user.name || "User"} className="w-full h-full object-cover" />
               ) : (
-                user.name.charAt(0)
+                (user.name || "?").charAt(0)
               )}
             </div>
             <button
